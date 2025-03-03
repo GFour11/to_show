@@ -11,8 +11,8 @@ ENV PYTHONPATH=/app
 COPY . .
 RUN playwright install --with-deps
 
+RUN chmod +x /app/entrypoint_db.sh
 RUN chmod +x /app/entrypoint_london.sh /app/entrypoint_netherlands.sh
-
 USER pwuser
 
 CMD ["sh", "-c", "python $SCRIPT_PATH"]

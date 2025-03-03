@@ -12,7 +12,7 @@ services:
       - mongo
     environment:
       - SCRIPT_PATH=/app/London/main.py
-      - DATABASE_URL=postgresql+asyncpg://user:password@postgres:5432/db_name
+      - DATABASE_URL=postgresql+asyncpg://serp_admin:mr_svenson_6612@postgres:5432/serp_parsers
 
   netherlands_parser:
     build:
@@ -25,7 +25,7 @@ services:
       - mongo
     environment:
       - SCRIPT_PATH=/app/Netherlands/main.py
-      - DATABASE_URL=postgresql+asyncpg://user:password@postgres:5432/db_name
+      - DATABASE_URL=postgresql+asyncpg://serp_admin:mr_svenson_6612@postgres:5432/serp_parsers
 
 
   postgres:
@@ -33,13 +33,22 @@ services:
     container_name: postgres_db
     restart: always
     environment:
-      - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=db_name
+      - POSTGRES_USER=serp_admin
+      - POSTGRES_PASSWORD=mr_svenson_6612
+      - POSTGRES_DB=serp_parsers
     ports:
       - "5433:5432"
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  db_init:
+    build:
+      context: .
+    entrypoint: [ "/app/entrypoint_db.sh" ]
+    depends_on:
+      - postgres
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://serp_admin:mr_svenson_6612@postgres:5432/serp_parsers
 
   mongo:
     image: mongo:latest
