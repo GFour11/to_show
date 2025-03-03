@@ -1,0 +1,6 @@
+undetected-chromedriver
+beautifulsoup4
+selenium
+lxml
+setuptools
+requests

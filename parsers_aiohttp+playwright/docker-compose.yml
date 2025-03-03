@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  london_parser:
+    build:
+      context: .
+    entrypoint: ["/app/entrypoint_london.sh"]
+    volumes:
+      - .:/app
+    depends_on:
+      - postgres
+      - mongo
+    environment:
+      - SCRIPT_PATH=/app/London/main.py
+      - DATABASE_URL=postgresql+asyncpg://user:password@postgres:5432/db_name
+
+  netherlands_parser:
+    build:
+      context: .
+    entrypoint: ["/app/entrypoint_netherlands.sh"]
+    volumes:
+      - .:/app
+    depends_on:
+      - postgres
+      - mongo
+    environment:
+      - SCRIPT_PATH=/app/Netherlands/main.py
+      - DATABASE_URL=postgresql+asyncpg://user:password@postgres:5432/db_name
+
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres_db
+    restart: always
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=db_name
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo_db
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
